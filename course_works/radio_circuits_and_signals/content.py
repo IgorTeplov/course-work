@@ -64,6 +64,12 @@ class Task:
             par._p.get_or_add_pPr().get_or_add_numPr().get_or_add_numId().val = num
             par._p.get_or_add_pPr().get_or_add_numPr().get_or_add_ilvl().val = level
 
+        def cell(tabel, x, y):
+            return tabel.rows[x].cells[y]
+
+        def merge(tabel ,x1, y1, x2, y2):
+           cell(tabel, x1, y1).merge(cell(tabel, x2, y2))
+
         line_b("Завдання №1")
         p = self.document.add_paragraph('''Отримати представлення сигналу у вигляді ряду Фур'є (в синусно-косинусній формі, дійсній формі та в комплексної формі) з розрахунком перших десяти членів ряду (частоти, амплітуди і фази перших десятигармонік) для кожного з вказаних сигналів.''', style='List Number')
         list_number(self.document, p, level=0)
@@ -79,40 +85,41 @@ class Task:
         line("")
 
         table = self.document.add_table(rows=3, cols=10, style='BaseTable')
-        table.rows[0].cells[0].merge(table.rows[1].cells[0])
-        table.rows[0].cells[0].text = "№ Вар."
+        merge(table, 0,0, 1,0)
+        cell(table, 0,0).text = "№ Вар."
 
-        table.rows[0].cells[1].merge(table.rows[0].cells[2])
-        table.rows[0].cells[2].merge(table.rows[0].cells[3])
-        table.rows[0].cells[1].text = "Прямокутний"
+        merge(table, 0,1, 0,2)
+        merge(table, 0,2, 0,3)
+        
+        cell(table, 0,1).text = "Прямокутний"
 
-        table.rows[0].cells[4].merge(table.rows[0].cells[5])
-        table.rows[0].cells[4].text = "Пилкоподібний"
+        merge(table, 0,4, 0,5)
+        cell(table, 0,4).text = "Пилкоподібний"
 
-        table.rows[0].cells[6].merge(table.rows[0].cells[7])
-        table.rows[0].cells[6].text = "Трикутний"
+        merge(table, 0,6, 0,7)
+        cell(table, 0,6).text = "Трикутний"
 
-        table.rows[0].cells[8].merge(table.rows[0].cells[9])
-        table.rows[0].cells[8].text = "Меандр"
+        merge(table, 0,8, 0,9)
+        cell(table, 0,8).text = "Меандр"
 
         table.rows[1].cells[1].text = table.rows[1].cells[4].text = table.rows[1].cells[6].text = table.rows[1].cells[8].text = "f, Гц"
         table.rows[1].cells[2].text = table.rows[1].cells[5].text = table.rows[1].cells[7].text = table.rows[1].cells[9].text = "A, В"
-        table.rows[1].cells[3].text = "q"
+        cell(table, 1,3).text = "q"
 
-        table.rows[2].cells[0].text = f"{self.settings['TASK_1']['v']}"
+        cell(table, 2,0).text = f"{self.settings['TASK_1']['v']}"
 
-        table.rows[2].cells[1].text = f"{self.settings['TASK_1']['f_pr']}"
-        table.rows[2].cells[2].text = f"{self.settings['TASK_1']['a_b_pr']}"
-        table.rows[2].cells[3].text = f"{self.settings['TASK_1']['q_pr']}"
+        cell(table, 2,1).text = f"{self.settings['TASK_1']['f_pr']}"
+        cell(table, 2,2).text = f"{self.settings['TASK_1']['a_b_pr']}"
+        cell(table, 2,3).text = f"{self.settings['TASK_1']['q_pr']}"
 
-        table.rows[2].cells[4].text = f"{self.settings['TASK_1']['f_pl']}"
-        table.rows[2].cells[5].text = f"{self.settings['TASK_1']['a_b_pl']}"
+        cell(table, 2,4).text = f"{self.settings['TASK_1']['f_pl']}"
+        cell(table, 2,5).text = f"{self.settings['TASK_1']['a_b_pl']}"
 
-        table.rows[2].cells[6].text = f"{self.settings['TASK_1']['f_tr']}"
-        table.rows[2].cells[7].text = f"{self.settings['TASK_1']['a_b_tr']}"
+        cell(table, 2,6).text = f"{self.settings['TASK_1']['f_tr']}"
+        cell(table, 2,7).text = f"{self.settings['TASK_1']['a_b_tr']}"
 
-        table.rows[2].cells[8].text = f"{self.settings['TASK_1']['f_me']}"
-        table.rows[2].cells[9].text = f"{self.settings['TASK_1']['a_b_me']}"
+        cell(table, 2,8).text = f"{self.settings['TASK_1']['f_me']}"
+        cell(table, 2,9).text = f"{self.settings['TASK_1']['a_b_me']}"
 
         line("")
 
@@ -128,36 +135,36 @@ class Task:
         line("")
 
         table = self.document.add_table(rows=3, cols=8, style='BaseTable')
-        table.rows[0].cells[0].merge(table.rows[1].cells[0])
-        table.rows[0].cells[0].text = "№ Вар."
+        merge(table, 0,0, 1,0)
+        cell(table, 0,0).text = "№ Вар."
 
-        table.rows[0].cells[1].merge(table.rows[0].cells[2])
-        table.rows[0].cells[1].text = "Прямокутний"
+        merge(table, 0,1, 0,2)
+        cell(table, 0,1).text = "Прямокутний"
 
-        table.rows[0].cells[3].merge(table.rows[0].cells[4])
-        table.rows[0].cells[3].text = "Трикутний"
+        merge(table, 0,3, 0,4)
+        cell(table, 0,3).text = "Трикутний"
 
-        table.rows[0].cells[5].merge(table.rows[0].cells[6])
-        table.rows[0].cells[5].text = "Двосторонній експоненційний"
+        merge(table, 0,5, 0,6)
+        cell(table, 0,5).text = "Двосторонній експоненційний"
 
-        table.rows[0].cells[7].text = "Меандр"
+        cell(table, 0,7).text = "Меандр"
 
         table.rows[1].cells[1].text = table.rows[1].cells[3].text = table.rows[1].cells[5].text = "A, В"
         table.rows[1].cells[2].text = table.rows[1].cells[4].text = "t, c"
-        table.rows[1].cells[6].text = "a, 1/c"
-        table.rows[1].cells[7].text = "f0, кГц"
+        cell(table, 1,6).text = "a, 1/c"
+        cell(table, 1,7).text = "f0, кГц"
 
-        table.rows[2].cells[0].text = f"{self.settings['TASK_2']['v']}"
+        cell(table, 2,0).text = f"{self.settings['TASK_2']['v']}"
 
-        table.rows[2].cells[1].text = f"{self.settings['TASK_2']['a_b_pr']}"
-        table.rows[2].cells[2].text = f"{self.settings['TASK_2']['t_pr']}"
+        cell(table, 2,1).text = f"{self.settings['TASK_2']['a_b_pr']}"
+        cell(table, 2,2).text = f"{self.settings['TASK_2']['t_pr']}"
 
-        table.rows[2].cells[3].text = f"{self.settings['TASK_2']['a_b_tr']}"
-        table.rows[2].cells[4].text = f"{self.settings['TASK_2']['t_tr']}"
+        cell(table, 2,3).text = f"{self.settings['TASK_2']['a_b_tr']}"
+        cell(table, 2,4).text = f"{self.settings['TASK_2']['t_tr']}"
 
-        table.rows[2].cells[5].text = f"{self.settings['TASK_2']['a_b_ex']}"
-        table.rows[2].cells[6].text = f"{self.settings['TASK_2']['a_ex']}"
-        
-        table.rows[2].cells[7].text = f"{self.settings['TASK_2']['f_gr']}"
+        cell(table, 2,5).text = f"{self.settings['TASK_2']['a_b_ex']}"
+        cell(table, 2,6).text = f"{self.settings['TASK_2']['a_ex']}"
+
+        cell(table, 2,7).text = f"{self.settings['TASK_2']['f_gr']}"
 
         return self.document, self.settings

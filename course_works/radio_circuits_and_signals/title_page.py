@@ -38,6 +38,6 @@ class Task:
         line_r("Петренко О.М.")
         line_r("Мазуренко В.Б.")
         line_r("Селіванов Ю.М.")
-        line_c("Дніпро 2019")
+        line_c("Дніпро 2020")
 
         return self.document, self.settings
