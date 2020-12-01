@@ -281,7 +281,7 @@ class Task:
         def Ck(k):
             k = abs(k)
             if k == 0:
-                return furie.Ak(k)
+                return (furie.Ak(k), 0)
             return (furie.Ak(k)/2, np.around((k*w/2)*t), 3)
 
         @round
@@ -331,6 +331,66 @@ class Task:
         plot(x_k_11, Ak_, 'ro', name="pl_Ak", linewidth = 1, color = 'crimson')
         plot(x_k_5, fk_, 'ro', name="pl_fk", linewidth = 1, color = 'crimson')
 
+        line(f"k = {k_max}; f = {f} (Гц); A = {A} (В); τ = T = {t} (с); ω = {w} (Гц)")
+        line(f"a0 = {a0} (В)")
+
+        line("Оскільки пилкоподібний сигнал є непарною функцією, то в синусно-косинусній формі ряду Фур'є косинусна складова буде дорівнювати нулю (ak = 0).")
+        line("")
+        line("Для пилкоподібного сигналу ak має формулу:")
+        line("bk = (2*A/π)*((-1^k)/k)")
+
+        line(f"Таблиця розрахунків bk та Ak для пилкоподібного сигналу при k 0...{k_max}")
+        table = self.document.add_table(rows=1, cols=3, style='BaseTable')
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'k'
+        hdr_cells[1].text = 'bk'
+        hdr_cells[2].text = 'Ak'
+        for k in x_k_11:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(k)
+            row_cells[1].text = str(bk_[k])
+            row_cells[2].text = str(Ak_[k])
+
+        line("")
+        line(f"Таблиця розрахунків Ck та φk для пилкоподібного сигналу при k {-k_max//2}...{k_max//2}")
+        table = self.document.add_table(rows=1, cols=3, style='BaseTable')
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'k'
+        hdr_cells[1].text = 'Ck'
+        hdr_cells[2].text = 'φk'
+        c = 0
+        for k in x_k_5:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(k)
+            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{Ck_[c][1]})")
+            row_cells[2].text = str(fk_[c])
+            c += 1
+        line("")
+
+        add_img(self.document, 'img/pl_x_y.png', "Пилкоподібний сигнал")
+
+        add_img(self.document, 'img/pl_Ak.png', "Амплітудна спектральна діаграма пилкоподібного сигналу")
+
+        add_img(self.document, 'img/pl_fk.png', "Фазова спектральна діаграма пилкоподібного сигналу")
+
+        furie_sin_cos = f's(t) = {a0}'
+        for k in range(1, k_max+1):
+            furie_sin_cos += f" + {bk_[k]}*sin({np.around(k*w, 3)}*t)"
+        furie_diysn = f's(t) = {a0}'
+        for k in range(1, k_max+1):
+            furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
+        furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+        for ck in Ck_[1:]:
+            furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+
+        line("")
+        line("Синусно-косинусна форма пилкоподібного сигналу:")
+        line(furie_sin_cos)
+        line("Дійсна форма пилкоподібного сигналу:")
+        line(furie_diysn)
+        line("Комплексна форма пилкоподібного сигналу:")
+        line(furie_comlex)
+
     def sub_task_3(self):
         def line(text, style="Base", alignment=LEFT):
             line = self.document.add_paragraph(text, style=style)
@@ -372,7 +432,7 @@ class Task:
             if k % 2 == 0:
                 return 0
             else:
-                v = (4*A/(np.pi*k**2))*(1-pow(-1, k))
+                v = (4*A/((np.pi*k)**2))*(1-pow(-1, k))
                 return v
 
         def bk(k):
@@ -383,9 +443,9 @@ class Task:
         def Ck(k):
             k = abs(k)
             if k == 0:
-                return furie.Ak(k)
+                return (furie.Ak(k), 0)
             if k % 2 == 0:
-                return 0
+                return (0,0)
             else:
                 return (furie.Ak(k)/2, np.around(k*w*t, 3))
 
@@ -423,6 +483,67 @@ class Task:
         plot(x_k_11, Ak_, 'ro', name="tr_Ak", linewidth = 1, color = 'crimson')
         plot(x_k_5, fk_, 'ro', name="tr_fk", linewidth = 1, color = 'crimson')
 
+        # TEXT
+
+        line(f"k = {k_max}; f = {f} (Гц); A = {A} (В); τ = T = {t} (с); ω = {w} (Гц)")
+        line(f"a0/2 = {a0} (В)")
+
+        line("Оскільки трикутний сигнал є парною функцією, то в синусно-косинусній формі ряду Фур'є синусна складова буде дорівнювати нулю (bk = 0).")
+        line("")
+        line("Для трикутного сигналу ak має формулу:")
+        line("ak = (4*A)/((π*k)^2) * (1-(-1^k)")
+        # (4*A/(np.pi*k**2))*(1-pow(-1, k))
+        line(f"Таблиця розрахунків ak та Ak для трикутного сигналу при k 0...{k_max}")
+        table = self.document.add_table(rows=1, cols=3, style='BaseTable')
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'k'
+        hdr_cells[1].text = 'ak'
+        hdr_cells[2].text = 'Ak'
+        for k in x_k_11:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(k)
+            row_cells[1].text = str(ak_[k])
+            row_cells[2].text = str(Ak_[k])
+
+        line("")
+        line(f"Таблиця розрахунків Ck та φk для трикутного сигналу при k {-k_max//2}...{k_max//2}")
+        table = self.document.add_table(rows=1, cols=3, style='BaseTable')
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'k'
+        hdr_cells[1].text = 'Ck'
+        hdr_cells[2].text = 'φk'
+        c = 0
+        for k in x_k_5:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(k)
+            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{Ck_[c][1]})")
+            row_cells[2].text = str(fk_[c])
+            c += 1
+        line("")
+
+        add_img(self.document, 'img/tr_x_y.png', "Трикутний сигнал")
+
+        add_img(self.document, 'img/tr_Ak.png', "Амплітудна спектральна діаграма трикутного сигналу")
+
+        add_img(self.document, 'img/tr_fk.png', "Фазова спектральна діаграма трикутного сигналу")
+
+        furie_sin_cos = f's(t) = {a0*2}/2'
+        for k in range(1, k_max+1):
+            furie_sin_cos += f" + {ak_[k]}*cos({np.around(k*w, 3)}*t)"
+        furie_diysn = f's(t) = {a0*2}/2'
+        for k in range(1, k_max+1):
+            furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
+        furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+        for ck in Ck_[1:]:
+            furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+
+        line("")
+        line("Синусно-косинусна форма трикутного сигналу:")
+        line(furie_sin_cos)
+        line("Дійсна форма трикутного сигналу:")
+        line(furie_diysn)
+        line("Комплексна форма трикутного сигналу:")
+        line(furie_comlex)
     def sub_task_4(self):
         def line(text, style="Base", alignment=LEFT):
             line = self.document.add_paragraph(text, style=style)
@@ -476,9 +597,9 @@ class Task:
         def Ck(k):
             k = abs(k)
             if k == 0:
-                return furie.Ak(k)
+                return (furie.Ak(k), 0)
             if k % q == 0:
-                return 0
+                return (0,0)
             else:
                 return (furie.Ak(k)/2, np.around(k*w*t, 3))
 
@@ -533,3 +654,63 @@ class Task:
         plot(x_k_11, Ak_, 'ro', name="me_Ak", linewidth = 1, color = 'crimson')
         plot(x_k_5, fk_, 'ro', name="me_fk", linewidth = 1, color = 'crimson')
 
+        # TEXT
+
+        line(f"k = {k_max}; f = {f} (Гц); A = {A} (В); q = {q}; τ = T/q = {t} (с); ω = {w} (Гц)")
+        line(f"a0/2 = A/q = {a0} (В)")
+
+        line("Оскільки меандр сигнал є парною функцією, то в синусно-косинусній формі ряду Фур'є синусна складова буде дорівнювати нулю (bk = 0).")
+        line("")
+        line("Для меандр сигналу ak має формулу:")
+        line("ak = (2*A)/(π*k) * sin((π*k)/q)")
+        line(f"Таблиця розрахунків ak та Ak для меандр сигналу при k 0...{k_max}")
+        table = self.document.add_table(rows=1, cols=3, style='BaseTable')
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'k'
+        hdr_cells[1].text = 'ak'
+        hdr_cells[2].text = 'Ak'
+        for k in x_k_11:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(k)
+            row_cells[1].text = str(ak_[k])
+            row_cells[2].text = str(Ak_[k])
+
+        line("")
+        line(f"Таблиця розрахунків Ck та φk для меандр сигналу при k {-k_max//2}...{k_max//2}")
+        table = self.document.add_table(rows=1, cols=3, style='BaseTable')
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'k'
+        hdr_cells[1].text = 'Ck'
+        hdr_cells[2].text = 'φk'
+        c = 0
+        for k in x_k_5:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(k)
+            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{Ck_[c][1]})")
+            row_cells[2].text = str(fk_[c])
+            c += 1
+        line("")
+
+        add_img(self.document, 'img/me_x_y.png', "Меандр сигнал")
+
+        add_img(self.document, 'img/me_Ak.png', "Амплітудна спектральна діаграма меандр сигналу")
+
+        add_img(self.document, 'img/me_fk.png', "Фазова спектральна діаграма меандр сигналу")
+
+        furie_sin_cos = f's(t) = {a0*2}/2'
+        for k in range(1, k_max+1):
+            furie_sin_cos += f" + {ak_[k]}*cos({np.around(k*w, 3)}*t)"
+        furie_diysn = f's(t) = {a0*2}/2'
+        for k in range(1, k_max+1):
+            furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
+        furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+        for ck in Ck_[1:]:
+            furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+
+        line("")
+        line("Синусно-косинусна форма меандр сигналу:")
+        line(furie_sin_cos)
+        line("Дійсна форма меандр сигналу:")
+        line(furie_diysn)
+        line("Комплексна форма меандр сигналу:")
+        line(furie_comlex)
