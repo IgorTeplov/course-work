@@ -24,7 +24,13 @@ def plot(x, y, *args, show=False, save=True, name='img', **kvargs):
     fig, ax = plt.subplots()
     ax.plot(x,y, *args, **kvargs)
     if show:
-        fig.show()
+        plt.show()
     if save:
         fig.savefig(f'img/{name}.png')
     plt.close(fig)
+
+def plots(pl):
+    for p in pl:
+        fig, ax = plt.subplots()
+        ax.plot(p[0],p[1], linewidth = 1, color = 'crimson')
+    plt.show()

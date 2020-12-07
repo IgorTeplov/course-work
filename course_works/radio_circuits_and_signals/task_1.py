@@ -6,7 +6,6 @@ from utils.img import add_img
 
 from math import sqrt, pow
 import numpy as np
-from matplotlib import pyplot as plt
 
 def round(func):
     def wrap(*args):
