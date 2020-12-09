@@ -2,6 +2,7 @@ from utils.enum import *
 
 from utils.plot import plot
 from utils.furie import Furie
+from utils.signal import Signal
 from utils.img import add_img
 
 from math import sqrt, pow
@@ -99,6 +100,17 @@ class Task:
         fk_ = []
         Ck_ = []
 
+
+        def st(T):
+            if abs(T) <= t/2:
+                return A
+            return 0
+        t_tick = t/100
+        t_line = np.arange(-t, t, t_tick)
+        s = Signal(st, t_line, [0])
+        plot(s.base_time_line, s.base_signal_line, name="pr_x_y", linewidth = 1, color = 'crimson')
+
+
         @round
         def ak(k):
             if k == 0:
@@ -167,7 +179,7 @@ class Task:
         x_k_11 = range(0, k_max+1)
         x_k_5 = range((-k_max//2), (k_max//2)+1)
 
-        plot(x, y, name="pr_x_y", linewidth = 1, color = 'crimson')
+        # plot(x, y, name="pr_x_y", linewidth = 1, color = 'crimson')
         plot(x_k_11, Ak_, 'ro', name="pr_Ak", linewidth = 1, color = 'crimson')
         plot(x_k_5, fk_, 'ro', name="pr_fk", linewidth = 1, color = 'crimson')
 
@@ -418,6 +430,15 @@ class Task:
         fk_ = []
         Ck_ = []
 
+        def st(T):
+            if abs(T) <= t/2:
+                return A * (1 - abs(T)/(t/2))
+            return 0
+        t_tick = t/100
+        t_line = np.arange(-t, t, t_tick)
+        s = Signal(st, t_line, [0])
+        plot(s.base_time_line, s.base_signal_line, name="tr_x_y", linewidth = 1, color = 'crimson')
+
         # VIEW
 
         furie_sin_cos = ''
@@ -478,7 +499,7 @@ class Task:
         x_k_11 = range(0, k_max+1)
         x_k_5 = range((-k_max//2), (k_max//2)+1)
 
-        plot(x, y, name="tr_x_y", linewidth = 1, color = 'crimson')
+        # plot(x, y, name="tr_x_y", linewidth = 1, color = 'crimson')
         plot(x_k_11, Ak_, 'ro', name="tr_Ak", linewidth = 1, color = 'crimson')
         plot(x_k_5, fk_, 'ro', name="tr_fk", linewidth = 1, color = 'crimson')
 
@@ -573,6 +594,15 @@ class Task:
         fk_ = []
         Ck_ = []
 
+        def st(T):
+            if abs(T) <= t/2:
+                return A
+            return 0
+        t_tick = t/100
+        t_line = np.arange(-t, t, t_tick)
+        s = Signal(st, t_line, [0])
+        plot(s.base_time_line, s.base_signal_line, name="me_x_y", linewidth = 1, color = 'crimson')
+
         #VIEW
 
         furie_sin_cos = f'{a0}/2'
@@ -649,7 +679,7 @@ class Task:
         x_k_11 = range(0, k_max+1)
         x_k_5 = range((-k_max//2), (k_max//2)+1)
 
-        plot(x, y, name="me_x_y", linewidth = 1, color = 'crimson')
+        # plot(x, y, name="me_x_y", linewidth = 1, color = 'crimson')
         plot(x_k_11, Ak_, 'ro', name="me_Ak", linewidth = 1, color = 'crimson')
         plot(x_k_5, fk_, 'ro', name="me_fk", linewidth = 1, color = 'crimson')
 
