@@ -105,10 +105,17 @@ class Task:
             if abs(T) <= t/2:
                 return A
             return 0
+
+        
+
         t_tick = t/100
-        t_line = np.arange(-t, t, t_tick)
-        s = Signal(st, t_line, [0])
-        plot(s.base_time_line, s.base_signal_line, name="pr_x_y", linewidth = 1, color = 'crimson')
+        t_line = np.arange(-t*11, t*11, t_tick)
+
+        def sw_s(i):
+            return int(i*q*t/t_tick)
+
+        s = Signal(st, t_line, [sw_s(-10), 0, sw_s(10)])
+        plot(s.base_time_line, s.create_signal_line(), steeps={'x':{'from':-t*10, 'to':t*11, 'steep':t*5}}, name="pr_x_y", linewidth = 1, color = '#AF8515')
 
 
         @round
@@ -126,13 +133,7 @@ class Task:
         furie = Furie(a0, ak, bk, t/2, T, self.settings['TASK_1']['_pr_k_max_graph'])
 
         def Ck(k):
-            k = abs(k)
-            if k == 0:
-                return (furie.Ak(k), 0)
-            if k % q == 0:
-                return (0,0)
-            else:
-                return (furie.Ak(k)/2, np.around(k*w*t, 3))
+            return (furie.Ak(abs(k))/2, k)
 
         @round
         def fk(k):
@@ -180,8 +181,8 @@ class Task:
         x_k_5 = range((-k_max//2), (k_max//2)+1)
 
         # plot(x, y, name="pr_x_y", linewidth = 1, color = 'crimson')
-        plot(x_k_11, Ak_, 'ro', name="pr_Ak", linewidth = 1, color = 'crimson')
-        plot(x_k_5, fk_, 'ro', name="pr_fk", linewidth = 1, color = 'crimson')
+        plot(x_k_11, Ak_, 'ro', name="pr_Ak", linewidth = 1, color = '#AF8515')
+        plot(x_k_5, fk_, 'ro', name="pr_fk", linewidth = 1, color = '#AF8515')
 
         # TEXT
 
@@ -215,7 +216,7 @@ class Task:
         for k in x_k_5:
             row_cells = table.add_row().cells
             row_cells[0].text = str(k)
-            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{Ck_[c][1]})")
+            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{fk_[c]})")
             row_cells[2].text = str(fk_[c])
             c += 1
         line("")
@@ -226,15 +227,21 @@ class Task:
 
         add_img(self.document, 'img/pr_fk.png', "Фазова спектральна діаграма прямокутного сигналу")
 
-        furie_sin_cos = f's(t) = {a0*2}/2'
+        furie_sin_cos = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_sin_cos += f" + {ak_[k]}*cos({np.around(k*w, 3)}*t)"
-        furie_diysn = f's(t) = {a0*2}/2'
+            furie_sin_cos += f" + {ak_[k]}*cos({k}*{np.around(w, 3)}*t)"
+        furie_diysn = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
-        furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+            furie_diysn += f" + {Ak_[k]}*cos({k}*{np.around(w, 3)}*t + {fk_[k]})"
+        furie_comlex = f's(t) = ... + {Ck_[0][0]}*e^(j*{fk_[0]})*e^(j*{Ck_[0][1]}*{w}*t)'
+        cpunt_f = 1
         for ck in Ck_[1:]:
-            furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+            furie_comlex += f" + {ck[0]}*e^(j*{fk_[cpunt_f]})*e^(j*{ck[1]}*{w}*t)"
+            cpunt_f += 1
+
+        furie_sin_cos += ' + ...'
+        furie_diysn += ' + ...'
+        furie_comlex += ' + ...'
 
         line("")
         line("Синусно-косинусна форма ппрямокутного сигналу:")
@@ -290,10 +297,7 @@ class Task:
         furie = Furie(a0, ak, bk, t/4, T, self.settings['TASK_1']['_pl_k_max_graph'])
 
         def Ck(k):
-            k = abs(k)
-            if k == 0:
-                return (furie.Ak(k), 0)
-            return (furie.Ak(k)/2, np.around((k*w/2)*t), 3)
+            return (furie.Ak(abs(k))/2, k)
 
         @round
         def fk(k):
@@ -334,13 +338,13 @@ class Task:
         pl_pos = self.settings['TASK_1']['_pl_t_pos']
 
         x = np.arange(pl_min,pl_max,pl_step)
-        y = [furie.f(t, only_pos=pl_pos) for t in x]
+        y = [furie.f(t, once=False, only_pos=pl_pos) for t in x]
         x_k_11 = range(0, k_max+1)
         x_k_5 = range((-k_max//2), (k_max//2)+1)
 
-        plot(x, y, name="pl_x_y", linewidth = 1, color = 'crimson')
-        plot(x_k_11, Ak_, 'ro', name="pl_Ak", linewidth = 1, color = 'crimson')
-        plot(x_k_5, fk_, 'ro', name="pl_fk", linewidth = 1, color = 'crimson')
+        plot(x, y, name="pl_x_y", linewidth = 1, color = '#AF8515')
+        plot(x_k_11, Ak_, 'ro', name="pl_Ak", linewidth = 1, color = '#AF8515')
+        plot(x_k_5, fk_, 'ro', name="pl_fk", linewidth = 1, color = '#AF8515')
 
         line(f"k = {k_max}; f = {f} (Гц); A = {A} (В); τ = T = {t} (с); ω = {w} (Гц)")
         line(f"a0 = {a0} (В)")
@@ -373,7 +377,7 @@ class Task:
         for k in x_k_5:
             row_cells = table.add_row().cells
             row_cells[0].text = str(k)
-            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{Ck_[c][1]})")
+            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{fk_[c]})")
             row_cells[2].text = str(fk_[c])
             c += 1
         line("")
@@ -384,15 +388,31 @@ class Task:
 
         add_img(self.document, 'img/pl_fk.png', "Фазова спектральна діаграма пилкоподібного сигналу")
 
+        # furie_sin_cos = f's(t) = {a0}'
+        # for k in range(1, k_max+1):
+        #     furie_sin_cos += f" + {bk_[k]}*sin({np.around(k*w, 3)}*t)"
+        # furie_diysn = f's(t) = {a0}'
+        # for k in range(1, k_max+1):
+        #     furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
+        # furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+        # for ck in Ck_[1:]:
+        #     furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+
         furie_sin_cos = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_sin_cos += f" + {bk_[k]}*sin({np.around(k*w, 3)}*t)"
+            furie_sin_cos += f" + {bk_[k]}*cos({k}*{np.around(w, 3)}*t)"
         furie_diysn = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
-        furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+            furie_diysn += f" + {Ak_[k]}*cos({k}*{np.around(w, 3)}*t + {fk_[k]})"
+        furie_comlex = f's(t) = ...+ {Ck_[0][0]}*e^(j*{fk_[0]})*e^(j*{Ck_[0][1]}*{w}*t)'
+        cpunt_f = 1
         for ck in Ck_[1:]:
-            furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+            furie_comlex += f" + {ck[0]}*e^(j*{fk_[cpunt_f]})*e^(j*{ck[1]}*{w}*t)"
+            cpunt_f += 1
+
+        furie_sin_cos += ' + ...'
+        furie_diysn += ' + ...'
+        furie_comlex += ' + ...'
 
         line("")
         line("Синусно-косинусна форма пилкоподібного сигналу:")
@@ -401,7 +421,6 @@ class Task:
         line(furie_diysn)
         line("Комплексна форма пилкоподібного сигналу:")
         line(furie_comlex)
-
     def sub_task_3(self):
         def line(text, style="Base", alignment=LEFT):
             line = self.document.add_paragraph(text, style=style)
@@ -435,9 +454,13 @@ class Task:
                 return A * (1 - abs(T)/(t/2))
             return 0
         t_tick = t/100
-        t_line = np.arange(-t, t, t_tick)
-        s = Signal(st, t_line, [0])
-        plot(s.base_time_line, s.base_signal_line, name="tr_x_y", linewidth = 1, color = 'crimson')
+        t_line = np.arange(-t*3, t*3, t_tick)
+
+        def st_s(i):
+            return int(i*t/t_tick)
+
+        s = Signal(st, t_line, [st_s(-2.2), 0, st_s(2.2)])
+        plot(s.base_time_line, s.create_signal_line(), name="tr_x_y", linewidth = 1, color = '#AF8515')
 
         # VIEW
 
@@ -461,13 +484,7 @@ class Task:
         furie = Furie(a0, ak, bk, t/2, T, self.settings['TASK_1']['_tr_k_max_graph'])
 
         def Ck(k):
-            k = abs(k)
-            if k == 0:
-                return (furie.Ak(k), 0)
-            if k % 2 == 0:
-                return (0,0)
-            else:
-                return (furie.Ak(k)/2, np.around(k*w*t, 3))
+            return (furie.Ak(abs(k))/2, k)
 
         def fk(k):
             return 0
@@ -500,8 +517,8 @@ class Task:
         x_k_5 = range((-k_max//2), (k_max//2)+1)
 
         # plot(x, y, name="tr_x_y", linewidth = 1, color = 'crimson')
-        plot(x_k_11, Ak_, 'ro', name="tr_Ak", linewidth = 1, color = 'crimson')
-        plot(x_k_5, fk_, 'ro', name="tr_fk", linewidth = 1, color = 'crimson')
+        plot(x_k_11, Ak_, 'ro', name="tr_Ak", linewidth = 1, color = '#AF8515')
+        plot(x_k_5, fk_, 'ro', name="tr_fk", linewidth = 1, color = '#AF8515')
 
         # TEXT
 
@@ -536,7 +553,7 @@ class Task:
         for k in x_k_5:
             row_cells = table.add_row().cells
             row_cells[0].text = str(k)
-            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{Ck_[c][1]})")
+            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{fk_[c]})")
             row_cells[2].text = str(fk_[c])
             c += 1
         line("")
@@ -547,15 +564,31 @@ class Task:
 
         add_img(self.document, 'img/tr_fk.png', "Фазова спектральна діаграма трикутного сигналу")
 
-        furie_sin_cos = f's(t) = {a0*2}/2'
+        # furie_sin_cos = f's(t) = {a0*2}/2'
+        # for k in range(1, k_max+1):
+        #     furie_sin_cos += f" + {ak_[k]}*cos({np.around(k*w, 3)}*t)"
+        # furie_diysn = f's(t) = {a0*2}/2'
+        # for k in range(1, k_max+1):
+        #     furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
+        # furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+        # for ck in Ck_[1:]:
+        #     furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+
+        furie_sin_cos = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_sin_cos += f" + {ak_[k]}*cos({np.around(k*w, 3)}*t)"
-        furie_diysn = f's(t) = {a0*2}/2'
+            furie_sin_cos += f" + {ak_[k]}*cos({k}*{np.around(w, 3)}*t)"
+        furie_diysn = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
-        furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+            furie_diysn += f" + {Ak_[k]}*cos({k}*{np.around(w, 3)}*t + {fk_[k]})"
+        furie_comlex = f's(t) = ...+ {Ck_[0][0]}*e^(j*{fk_[0]})*e^(j*{Ck_[0][1]}*{w}*t)'
+        cpunt_f = 1
         for ck in Ck_[1:]:
-            furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+            furie_comlex += f" + {ck[0]}*e^(j*{fk_[cpunt_f]})*e^(j*{ck[1]}*{w}*t)"
+            cpunt_f += 1
+
+        furie_sin_cos += ' + ...'
+        furie_diysn += ' + ...'
+        furie_comlex += ' + ...'
 
         line("")
         line("Синусно-косинусна форма трикутного сигналу:")
@@ -598,10 +631,14 @@ class Task:
             if abs(T) <= t/2:
                 return A
             return 0
+
+        def sw_s(i):
+            return int(i*q*t/t_tick)
+
         t_tick = t/100
-        t_line = np.arange(-t, t, t_tick)
-        s = Signal(st, t_line, [0])
-        plot(s.base_time_line, s.base_signal_line, name="me_x_y", linewidth = 1, color = 'crimson')
+        t_line = np.arange(-t*4, t*4, t_tick)
+        s = Signal(st, t_line, [sw_s(-1), 0, sw_s(1)])
+        plot(s.base_time_line, s.create_signal_line(), steeps={'x':{'from':-t*3, 'to':t*4, 'steep':t*2}}, name="me_x_y", linewidth = 1, color = '#AF8515')
 
         #VIEW
 
@@ -624,13 +661,8 @@ class Task:
         furie = Furie(a0, ak, bk, t/2, T, self.settings['TASK_1']['_me_k_max_graph'])
 
         def Ck(k):
-            k = abs(k)
-            if k == 0:
-                return (furie.Ak(k), 0)
-            if k % q == 0:
-                return (0,0)
-            else:
-                return (furie.Ak(k)/2, np.around(k*w*t, 3))
+            return (furie.Ak(abs(k))/2, k)
+                
 
         @round
         def fk(k):
@@ -680,8 +712,8 @@ class Task:
         x_k_5 = range((-k_max//2), (k_max//2)+1)
 
         # plot(x, y, name="me_x_y", linewidth = 1, color = 'crimson')
-        plot(x_k_11, Ak_, 'ro', name="me_Ak", linewidth = 1, color = 'crimson')
-        plot(x_k_5, fk_, 'ro', name="me_fk", linewidth = 1, color = 'crimson')
+        plot(x_k_11, Ak_, 'ro', name="me_Ak", linewidth = 1, color = '#AF8515')
+        plot(x_k_5, fk_, 'ro', name="me_fk", linewidth = 1, color = '#AF8515')
 
         # TEXT
 
@@ -715,7 +747,7 @@ class Task:
         for k in x_k_5:
             row_cells = table.add_row().cells
             row_cells[0].text = str(k)
-            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{Ck_[c][1]})")
+            row_cells[1].text = str(f"{Ck_[c][0]}*e^(j*{fk_[c]})")
             row_cells[2].text = str(fk_[c])
             c += 1
         line("")
@@ -726,15 +758,31 @@ class Task:
 
         add_img(self.document, 'img/me_fk.png', "Фазова спектральна діаграма меандр сигналу")
 
-        furie_sin_cos = f's(t) = {a0*2}/2'
+        # furie_sin_cos = f's(t) = {a0*2}/2'
+        # for k in range(1, k_max+1):
+        #     furie_sin_cos += f" + {ak_[k]}*cos({np.around(k*w, 3)}*t)"
+        # furie_diysn = f's(t) = {a0*2}/2'
+        # for k in range(1, k_max+1):
+        #     furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
+        # furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+        # for ck in Ck_[1:]:
+        #     furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+
+        furie_sin_cos = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_sin_cos += f" + {ak_[k]}*cos({np.around(k*w, 3)}*t)"
-        furie_diysn = f's(t) = {a0*2}/2'
+            furie_sin_cos += f" + {ak_[k]}*cos({k}*{np.around(w, 3)}*t)"
+        furie_diysn = f's(t) = {a0}'
         for k in range(1, k_max+1):
-            furie_diysn += f" + {Ak_[k]}*cos({np.around(k*w, 3)}*t + {fk_[k]})"
-        furie_comlex = f's(t) = {Ck_[0][0]}*e^(j*{Ck_[0][1]}*t)'
+            furie_diysn += f" + {Ak_[k]}*cos({k}*{np.around(w, 3)}*t + {fk_[k]})"
+        furie_comlex = f's(t) = ... + {Ck_[0][0]}*e^(j*{fk_[0]})*e^(j*{Ck_[0][1]}*{w}*t)'
+        cpunt_f = 1
         for ck in Ck_[1:]:
-            furie_comlex += f" + {ck[0]}*e^(j*{ck[1]}*t)"
+            furie_comlex += f" + {ck[0]}*e^(j*{fk_[cpunt_f]})*e^(j*{ck[1]}*{w}*t)"
+            cpunt_f += 1
+
+        furie_sin_cos += ' + ...'
+        furie_diysn += ' + ...'
+        furie_comlex += ' + ...'
 
         line("")
         line("Синусно-косинусна форма меандр сигналу:")

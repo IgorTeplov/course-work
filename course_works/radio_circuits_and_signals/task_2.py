@@ -67,7 +67,7 @@ class Task:
             return int(i*q*t/t_tick)
 
         s = Signal(st, t_line, [0])
-        plot(s.base_time_line, s.base_signal_line, name="2pr", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.base_signal_line, name="2pr", linewidth = 1, color = '#0FE7CDFF')
 
         w_alt = 18*np.pi*(1/t)
         w_tick_alt = w_alt/1000
@@ -84,10 +84,10 @@ class Task:
             return 0
 
         s_alt = Signal(sw, w_line_alt, [0])
-        plot(s_alt.base_time_line, s_alt.create_signal_line(), name="2pr_w", linewidth = 1, color = 'crimson')
+        plot(s_alt.base_time_line, s_alt.create_signal_line(), name="2pr_w", linewidth = 1, color = '#0FE7CDFF')
 
         s = Signal(sf, w_line_alt, [0])
-        plot(s.base_time_line, s.create_signal_line(), name="2pr_f", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.create_signal_line(), name="2pr_f", linewidth = 1, color = '#0FE7CDFF')
 
         w = 3*np.pi*f
         w_tick = w/1000
@@ -99,7 +99,7 @@ class Task:
             return int(i*w/w_tick)
 
         s = Signal(sw_alt, w_line, [sw_s(-0.75), sw_s(0.55)])
-        plot(s.base_time_line, s.create_signal_line(), name="2pr_line", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.create_signal_line(), name="2pr_line", linewidth = 1, color = '#0FE7CDFF')
 
         add_img(self.document, 'img/2pr.png', 'Графік прямокутного сигналу s(t)')
         line("Спектральна функція прямокутного імпульсу:")
@@ -135,7 +135,7 @@ class Task:
             return int(i*t/t_tick)
 
         s = Signal(st, t_line, [0])
-        plot(s.base_time_line, s.base_signal_line, name="2tr", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.base_signal_line, name="2tr", linewidth = 1, color = '#0FE7CDFF')
 
         w_alt = 24*np.pi*(1/t)
         w_tick_alt = w_alt/1000
@@ -147,10 +147,10 @@ class Task:
             return 0
 
         s_alt = Signal(sw, w_line_alt, [0])
-        plot(s_alt.base_time_line, s_alt.create_signal_line(), name="2tr_w", linewidth = 1, color = 'crimson')
+        plot(s_alt.base_time_line, s_alt.create_signal_line(), name="2tr_w", linewidth = 1, color = '#0FE7CDFF')
 
         s = Signal(sf, w_line_alt, [0])
-        plot(s.base_time_line, s.create_signal_line(), name="2tr_f", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.create_signal_line(), name="2tr_f", linewidth = 1, color = '#0FE7CDFF')
 
         w = 3*np.pi*f
         w_tick = w/1000
@@ -162,7 +162,7 @@ class Task:
             return int(i*w/w_tick)
 
         s = Signal(sw_alt, w_line, [sw_s(-0.75), sw_s(0.55)])
-        plot(s.base_time_line, s.create_signal_line(), name="2tr_line", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.create_signal_line(), name="2tr_line", linewidth = 1, color = '#0FE7CDFF')
 
         add_img(self.document, 'img/2tr.png', 'Графік трикутного сигналу s(t)')
         line("Спектральна функція трикутного імпульсу:")
@@ -202,7 +202,7 @@ class Task:
             return int(i*t/t_tick)
 
         s = Signal(st, t_line, [0])
-        plot(s.base_time_line, s.base_signal_line, name="2ex", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.base_signal_line, name="2ex", linewidth = 1, color = '#0FE7CDFF')
 
         w_alt = 24*np.pi*(1/t)
         w_tick_alt = w_alt/1000
@@ -214,10 +214,10 @@ class Task:
             return 0
 
         s_alt = Signal(sw, w_line_alt, [0])
-        plot(s_alt.base_time_line, s_alt.create_signal_line(), name="2ex_w", linewidth = 1, color = 'crimson')
+        plot(s_alt.base_time_line, s_alt.create_signal_line(), name="2ex_w", linewidth = 1, color = '#0FE7CDFF')
 
         s = Signal(sf, w_line_alt, [0])
-        plot(s.base_time_line, s.create_signal_line(), name="2ex_f", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.create_signal_line(), name="2ex_f", linewidth = 1, color = '#0FE7CDFF')
 
         w = 12*np.pi*f
         w_tick = w/1000
@@ -234,7 +234,7 @@ class Task:
                     return x
                 return y
         s = SignalSpec(sw_alt, w_line, [sw_s(-0.65), sw_s(0.65)])
-        plot(s.base_time_line, s.create_signal_line(), name="2ex_line", linewidth = 1, color = 'crimson')
+        plot(s.base_time_line, s.create_signal_line(), name="2ex_line", linewidth = 1, color = '#0FE7CDFF')
 
         add_img(self.document, 'img/2ex.png', 'Графік двостороннього експоненційного сигналу s(t)')
         line("Спектральна функція двостороннього експоненційного імпульсу:")
